@@ -8,44 +8,77 @@
 <style>
   :root{
     --bg:#0c0e13; --panel:#151823; --line:#2a3040; --ink:#e9ecf2; --muted:#8b93a6;
-    --gold:#ffd54a; --a:#ff6b6b; --b:#7fd6a0; --c:#b88cff;
+    --mina:#5fb4ff; --yuki:#7fd6a0; --hanin:#b7c8ff; --gold:#ffd54a;
+    --a:#ff6b6b; --b:#7fd6a0; --c:#b88cff;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{
-    background:radial-gradient(130% 100% at 50% 0%,#171b27 0%,var(--bg) 60%);
-    color:var(--ink);
+  body{background:radial-gradient(130% 100% at 50% 0%,#171b27 0%,var(--bg) 60%);color:var(--ink);
     font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
-    display:flex;flex-direction:column;align-items:center;height:100%;overflow:hidden;
-  }
+    display:flex;flex-direction:column;align-items:center;height:100%;overflow:hidden;}
   #top{width:100%;max-width:720px;padding:12px 18px 8px;text-align:center}
   #top h1{margin:0;font-size:16px;letter-spacing:3px;color:#dfe3ea;font-weight:700}
-  #stage{width:100%;max-width:720px;flex:1;display:flex;flex-direction:column;
-         min-height:0;padding:0 14px 10px;cursor:pointer}
-  #log{flex:1;overflow-y:auto;padding:10px 4px 6px;display:flex;flex-direction:column;gap:12px;
-       scroll-behavior:smooth}
+  #stage{width:100%;max-width:720px;flex:1;display:flex;flex-direction:column;min-height:0;padding:0 14px 10px;cursor:pointer}
+  #log{flex:1;overflow-y:auto;padding:10px 4px 6px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+  .row{display:flex}.row.L{justify-content:flex-start}.row.R{justify-content:flex-end}.row.C{justify-content:center}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .narr{align-self:stretch;padding:4px 6px 4px 16px;border-left:3px solid rgba(139,147,166,.5);
-        color:#c6cdda;line-height:1.75;font-size:15px;white-space:pre-wrap;animation:rise .22s ease}
-  .rules{align-self:stretch;background:#141a26;border:1px solid #2e3a50;border-radius:12px;
-         padding:14px 18px;line-height:1.8;font-size:13.5px;color:#cfd6e4;white-space:pre-wrap;animation:rise .22s ease}
+        color:#c6cdda;font-style:italic;line-height:1.75;font-size:15px;white-space:pre-wrap;animation:rise .22s ease}
+  .bubble{position:relative;max-width:82%;background:var(--panel);border:1px solid var(--line);
+          border-left:4px solid var(--line);border-radius:12px;padding:10px 14px;animation:rise .22s ease}
+  .row.R .bubble{border-left:1px solid var(--line);border-right:4px solid var(--line)}
+  .bubble .name{font-size:12px;font-weight:800;margin-bottom:3px}
+  .bubble .txt{font-size:15px;line-height:1.65;color:#eef1f6;white-space:pre-wrap}
+  .cue{align-self:center;max-width:90%;font-size:14.5px;color:#0e1014;font-weight:800;text-align:center;line-height:1.5;
+       background:linear-gradient(180deg,#ffe08a,#ffd24a);border:1px solid #c9a23b;border-radius:12px;padding:12px 18px;
+       box-shadow:0 0 0 3px rgba(255,213,74,.16);animation:rise .22s ease}
+  .cue .who{display:block;font-size:11px;color:#7a5c10;margin-bottom:3px;letter-spacing:1px}
+  .rules{align-self:stretch;background:#141a26;border:1px solid #2e3a50;border-radius:12px;padding:14px 18px;
+         line-height:1.8;font-size:13.5px;color:#cfd6e4;white-space:pre-wrap;animation:rise .22s ease}
   .rules .rtag{display:block;font-size:13px;font-weight:800;color:var(--gold);margin-bottom:8px;letter-spacing:1px}
   .branch{align-self:stretch;display:flex;flex-direction:column;gap:8px;animation:rise .22s ease}
   .brow{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:11px 15px;background:#141823}
   .brow .bt{font-size:14px;font-weight:800;margin-bottom:2px}
   .brow .bd{font-size:13px;color:#cdd3df;line-height:1.6}
   .brow .note{font-size:11.5px;color:var(--muted);margin-top:3px}
-  .brow.A{border-left-color:var(--a)} .brow.A .bt{color:var(--a)}
-  .brow.B{border-left-color:var(--b)} .brow.B .bt{color:var(--b)}
-  .brow.C{border-left-color:var(--c)} .brow.C .bt{color:var(--c)}
-  #hint{height:22px;text-align:center;color:var(--muted);font-size:12px;padding-top:2px;
-        user-select:none;animation:pulse 1.4s ease-in-out infinite}
+  .brow.A{border-left-color:var(--a)}.brow.A .bt{color:var(--a)}
+  .brow.B{border-left-color:var(--b)}.brow.B .bt{color:var(--b)}
+  .brow.C{border-left-color:var(--c)}.brow.C .bt{color:var(--c)}
+  #bchoices{display:none;flex-direction:column;gap:8px;padding:8px 4px 4px}
+  #bchoices button{width:100%;text-align:left;background:#1b2030;border:1px solid var(--line);color:var(--ink);
+       padding:13px 16px;border-radius:11px;cursor:pointer;font-size:14.5px;font-family:inherit;line-height:1.5}
+  #bchoices button:hover{border-color:var(--gold);color:#fff}
+  #bchoices button::before{content:"▶";color:var(--gold);font-size:11px;margin-right:9px}
+  #gate{display:none;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:18px;margin:8px 0;
+        background:linear-gradient(180deg,#1a1f2c,#141823);border:1px solid var(--line);border-radius:14px}
+  #gate .lock{font-size:13px;color:var(--ink);font-weight:700}
+  #gate .sub{font-size:12px;color:var(--muted)}
+  #gate .inrow{display:flex;gap:8px;margin-top:2px}
+  #gate input{background:#0e1118;border:1px solid var(--line);color:var(--ink);padding:11px 14px;border-radius:10px;
+       font-size:16px;font-family:inherit;width:160px;text-align:center;letter-spacing:3px}
+  #gate input:focus{outline:none;border-color:var(--gold)}
+  #gate button{background:linear-gradient(180deg,#243047,#1a2235);border:1px solid var(--gold);color:var(--gold);
+       font-weight:800;padding:11px 18px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px}
+  #gate button:hover{background:#2a3550;color:#fff}
+  #gate .err{font-size:12.5px;color:#ff8585;min-height:16px}
+  #hint{height:22px;text-align:center;color:var(--muted);font-size:12px;padding-top:2px;user-select:none;animation:pulse 1.4s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.9}}
 </style>
 </head>
 <body>
   <div id="top"><h1>엔딩 분기</h1></div>
-  <div id="stage"><div id="log"></div><div id="hint">▼ 클릭하여 계속</div></div>
+  <div id="stage">
+    <div id="log"></div>
+    <div id="bchoices"></div>
+    <div id="gate">
+      <div class="lock">🔒 결말 비밀번호</div>
+      <div class="sub">진행자에게 받은 비밀번호를 입력하세요.</div>
+      <div class="inrow"><input id="pw" type="text" inputmode="numeric" autocomplete="off" placeholder="••••"><button id="pwbtn">확인</button></div>
+      <div class="err" id="pwerr"></div>
+    </div>
+    <div id="hint">▼ 클릭하여 계속</div>
+  </div>
+  <script src="enc.js"></script>
 <script>
 const STORY=[
  {n:`모든 조사와 진상 규명이 끝났습니다. 두 파트에서 경과한 시간을 합산해, 여러분이 맞이할 결말을 확인합니다.`},
@@ -57,25 +90,76 @@ const STORY=[
    {k:"B", t:"분기 B", d:"합산 시간이 150분 미만"},
    {k:"C", t:"분기 C", d:"합산 시간이 150분 미만이고, 유키미즈 토오루가 한 번도 [혐오]를 느끼지 못한 경우", note:"※ “기적”이 일어나지 않는 한 볼 수 없는 엔딩."},
  ]},
- {n:`자신의 분기를 확인했다면, 진행자에게 받은 비밀번호로 결말을 열어 주세요.\n(엔딩 A·B·C는 준비 중입니다.)`},
+ {n:`자신의 분기를 확인했다면, 진행자에게 받은 비밀번호로 결말을 열어 주세요.`},
 ];
-const log=document.getElementById('log'), stage=document.getElementById('stage'), hint=document.getElementById('hint');
-let i=0, done=false;
+
+const SPK={ "미나토":{c:"var(--mina)",side:"L"}, "유키미즈":{c:"var(--yuki)",side:"L"}, "범인":{c:"var(--hanin)",side:"R"} };
+function spk(n){ return SPK[n]||{c:"#b8c0cc",side:"C"}; }
+const log=document.getElementById('log'),stage=document.getElementById('stage'),hint=document.getElementById('hint'),
+  gate=document.getElementById('gate'),bchoices=document.getElementById('bchoices'),
+  pwInput=document.getElementById('pw'),pwBtn=document.getElementById('pwbtn'),pwErr=document.getElementById('pwerr');
+let phase='story', i=0, branch=null, bi=0, bq=[], bEnd=false, bWait=false, bFin=false;
+
 function el(t,a){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 function add(n){log.appendChild(n);log.scrollTop=log.scrollHeight;}
 function narr(t){const d=el('div',{class:'narr'});d.appendChild(document.createTextNode(t));add(d);}
-function rules(o){const d=el('div',{class:'rules'});const tg=el('span',{class:'rtag'});tg.textContent=o.t;d.appendChild(tg);d.appendChild(document.createTextNode(o.b));add(d);}
-function branch(rows){const c=el('div',{class:'branch'});rows.forEach(r=>{const row=el('div',{class:'brow '+r.k});
+function dlg(name,text){const s=spk(name);const row=el('div',{class:'row '+s.side});const b=el('div',{class:'bubble'});b.style.borderColor=s.c;
+  const nm=el('div',{class:'name'});nm.style.color=s.c;nm.textContent=name;const tx=el('div',{class:'txt'});tx.textContent=text;
+  b.appendChild(nm);b.appendChild(tx);row.appendChild(b);add(row);}
+function cueBox(t){const row=el('div',{class:'row C'});const d=el('div',{class:'cue'});const w=el('span',{class:'who'});w.textContent='🎤 당신의 차례';
+  d.appendChild(w);d.appendChild(document.createTextNode(t));row.appendChild(d);add(row);}
+function rulesBox(o){const d=el('div',{class:'rules'});const tg=el('span',{class:'rtag'});tg.textContent=o.t;d.appendChild(tg);d.appendChild(document.createTextNode(o.b));add(d);}
+function branchCard(rows){const c=el('div',{class:'branch'});rows.forEach(r=>{const row=el('div',{class:'brow '+r.k});
   const bt=el('div',{class:'bt'});bt.textContent='▶ '+r.t;const bd=el('div',{class:'bd'});bd.textContent=r.d;row.appendChild(bt);row.appendChild(bd);
   if(r.note){const nt=el('div',{class:'note'});nt.textContent=r.note;row.appendChild(nt);}c.appendChild(row);});add(c);}
-function advance(){
-  if(done)return;
-  if(i>=STORY.length){done=true;hint.style.display='none';return;}
-  const s=STORY[i];i++;
-  if(s.n!=null)narr(s.n); else if(s.rules)rules(s.rules); else if(s.br)branch(s.br);
+function renderStep(s){
+  if(s.n!=null)narr(s.n); else if(s.cue!=null)cueBox(s.cue); else if(s.rules)rulesBox(s.rules);
+  else if(s.br)branchCard(s.br); else dlg(s.s,s.t);
 }
-stage.addEventListener('click',e=>{if(e.target.closest('button'))return;advance();});
-advance();
+/* 결착 안내 → 게이트 */
+function advanceStory(){
+  if(i>=STORY.length){ openGate(); return; }
+  renderStep(STORY[i]); i++;
+  if(i>=STORY.length) hint.style.display='none';
+}
+function openGate(){ phase='gate'; hint.style.display='none'; gate.style.display='flex'; gate.scrollIntoView({behavior:'smooth'}); pwInput.focus(); }
+/* 복호화 */
+async function decryptBlob(b64,pw){
+  const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));const salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct)));
+}
+async function submitPw(){
+  const pw=(pwInput.value||'').trim(); if(!pw)return;
+  pwBtn.disabled=true; pwErr.style.color='var(--muted)'; pwErr.textContent='확인 중…';
+  for(const k of Object.keys(window.ENC||{})){ try{ const st=await decryptBlob(window.ENC[k],pw); startBranch(st); return; }catch(e){} }
+  pwBtn.disabled=false; pwErr.style.color='#ff8585'; pwErr.textContent='비밀번호가 올바르지 않습니다.';
+}
+pwBtn.addEventListener('click',e=>{e.stopPropagation();submitPw();});
+pwInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitPw();}});
+pwInput.addEventListener('click',e=>e.stopPropagation());
+/* 분기 재생 */
+function startBranch(st){ phase='branch'; gate.style.display='none'; branch=st; bi=0; bq=[]; bEnd=false; bWait=false; bFin=false; hint.style.display=''; brStep(); }
+function brStep(){
+  if(bWait||bFin)return;
+  if(bq.length){ renderStep(bq.shift()); if(bq.length===0){ bEnd?finishBranch():brMaybeChoice(); } return; }
+  if(bi>=branch.length){ finishBranch(); return; }
+  const s=branch[bi];
+  if(s.choice){ brShowChoice(s.choice); return; }
+  bi++; renderStep(s); brMaybeChoice();
+}
+function brMaybeChoice(){ if(bi<branch.length && branch[bi].choice) brShowChoice(branch[bi].choice); }
+function brShowChoice(opts){ bWait=true; hint.style.display='none'; bchoices.innerHTML='';
+  opts.forEach(o=>{ const b=el('button',{}); b.textContent=o.label; b.addEventListener('click',ev=>{ev.stopPropagation();brPick(o);}); bchoices.appendChild(b); });
+  bchoices.style.display='flex'; log.scrollTop=log.scrollHeight; }
+function brPick(o){ bWait=false; bchoices.style.display='none'; bchoices.innerHTML=''; hint.style.display=''; bi++;
+  if(o.say) dlg(o.say,o.label); bEnd=!!o.end; bq=(o.reply||[]).slice();
+  if(bq.length){ renderStep(bq.shift()); if(bq.length===0){ bEnd?finishBranch():brMaybeChoice(); } } else { bEnd?finishBranch():brMaybeChoice(); } }
+function finishBranch(){ bFin=true; hint.style.display='none'; }
+stage.addEventListener('click',e=>{ if(e.target.closest('button')||e.target.closest('#gate'))return;
+  if(phase==='story')advanceStory(); else if(phase==='branch'){ if(!bWait)brStep(); } });
+advanceStory();
 </script>
 </body>
 </html>
